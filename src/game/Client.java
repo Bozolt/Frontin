@@ -6,6 +6,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import game.messages.calls.Call;
+import game.messages.distributions.Distribution;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -36,7 +39,7 @@ public class Client extends JPanel implements WindowListener {
     Socket socket;
     public BufferedWriter writer;
     BufferedReader reader;
-    LinkedList<String> messagesOnHold = new LinkedList<>();
+    LinkedList<Distribution> distributionsOnHold = new LinkedList<>();
     boolean listening = false;
 
     private String name;
@@ -78,7 +81,7 @@ public class Client extends JPanel implements WindowListener {
                     reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                     name = nameField.getText();
-                    sendMessage(name);
+                    //sendMessage(name);
 
                     this.removeAll();
                     Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -98,7 +101,7 @@ public class Client extends JPanel implements WindowListener {
         if (socket != null && socket.isConnected()) {
             if (!listening) {listenOnMessage();}
 
-            sendMessage(System.currentTimeMillis()+"; "+this.name);
+            
         }
 
         repaint();
@@ -118,9 +121,9 @@ public class Client extends JPanel implements WindowListener {
 
     }
 
-    public void sendMessage(String message) {
+    public void sendMessage(Call message) {
         try {
-            writer.write(message);
+            writer.write(message.toString());
             writer.newLine();
             writer.flush();
         } catch (Exception e) {e.printStackTrace();}
@@ -138,7 +141,7 @@ public class Client extends JPanel implements WindowListener {
                     while (socket.isConnected()) {
                         try {
                             message = reader.readLine();
-                            messagesOnHold.add(message);
+                            distributionsOnHold.add(Distribution.fromString(message));
                         } catch (Exception e) {
                             try {
                                 if (socket != null) socket.close();
