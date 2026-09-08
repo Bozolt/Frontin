@@ -21,6 +21,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
@@ -73,7 +74,7 @@ public class Client extends JPanel implements WindowListener {
 
             if (sendButton.getModel().isPressed()) {
                 try {
-                    socket = new Socket(addressField.getText(), Server.port);
+                    socket = new Socket(Inet4Address.getByName(addressField.getText()).getCanonicalHostName(), Server.port);
                     reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                     name = nameField.getText();

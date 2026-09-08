@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
@@ -15,7 +16,7 @@ import java.util.LinkedList;
 
 public class Server extends JPanel implements WindowListener {
     
-    ServerSocket serverSocket = new ServerSocket(port);
+    ServerSocket serverSocket = new ServerSocket(port, 255, InetAddress.getLocalHost());
     HashMap<String, Handler> handlers = new HashMap<>();
 
     boolean listening = false;
@@ -27,6 +28,7 @@ public class Server extends JPanel implements WindowListener {
     public Server() throws IOException {
         setFocusable(true);
         setPreferredSize(new Dimension(1280, 720));
+        System.out.println(serverSocket.getLocalSocketAddress());
     }
     
     public void run() {
