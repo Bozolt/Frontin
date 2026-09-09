@@ -11,7 +11,6 @@ public class Distribution {
         switch (parts[0]) {
             case "Post":
                 return new Post(message, Element.fromString(parts[1]));
-                break;
         
             default:
                 break;

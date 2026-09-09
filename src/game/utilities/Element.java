@@ -19,6 +19,8 @@ public class Element {
         if (base.contains("<2>")) throw new IllegalUnpackingException("Package is the incorrect depth, the initial Package was unpacked in an incorrect order");
         String parts[] = base.split("<1>");
         if (parts.length != 1) throw new IllegalFormattingException("Illegally formatted Element definer");
-        return new Element(parts[0], Point.fromString(parts[1].))
+        //return new Element(parts[0], Point.fromString(parts[1].))
+        return null;
     }
+    
 }

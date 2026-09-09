@@ -16,7 +16,7 @@ import java.util.LinkedList;
 
 public class Server extends JPanel implements WindowListener {
     
-    ServerSocket serverSocket = new ServerSocket(port, 255, InetAddress.getLocalHost());
+    ServerSocket serverSocket = new ServerSocket(port);
     HashMap<String, Handler> handlers = new HashMap<>();
 
     boolean listening = false;
@@ -28,7 +28,7 @@ public class Server extends JPanel implements WindowListener {
     public Server() throws IOException {
         setFocusable(true);
         setPreferredSize(new Dimension(1280, 720));
-        System.out.println(serverSocket.getLocalSocketAddress());
+        System.out.println(InetAddress.getLocalHost().getHostAddress());
     }
     
     public void run() {
@@ -69,9 +69,10 @@ public class Server extends JPanel implements WindowListener {
             }
         }
         
+        /*
         for (String key : handlers.keySet()) {
             Handler handler = handlers.get(key);
-            if (handler.messagesOnHold.size() != 0) {
+            if (handler.OnHold.size() != 0) {
                 String message = handler.messagesOnHold.pop();
                 if (message == null) {handlers.remove(key);}
                 else {System.out.println(key+": "+message);}
@@ -79,6 +80,7 @@ public class Server extends JPanel implements WindowListener {
 
             
         }
+        */
         
     }
 
