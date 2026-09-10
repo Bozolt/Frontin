@@ -81,7 +81,7 @@ public class Client extends JPanel implements WindowListener {
                     reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                     name = nameField.getText();
-                    //sendMessage(name);
+                    sendMessage(name);
 
                     this.removeAll();
                     Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -101,7 +101,8 @@ public class Client extends JPanel implements WindowListener {
         if (socket != null && socket.isConnected()) {
             if (!listening) {listenOnMessage();}
 
-            
+
+            sendMessage("asda");
         }
 
         repaint();
@@ -121,9 +122,9 @@ public class Client extends JPanel implements WindowListener {
 
     }
 
-    public void sendMessage(Call message) {
+    public void sendMessage(String message) {
         try {
-            writer.write(message.toString());
+            writer.write(message);
             writer.newLine();
             writer.flush();
         } catch (Exception e) {e.printStackTrace();}

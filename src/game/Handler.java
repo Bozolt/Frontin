@@ -17,7 +17,7 @@ public class Handler implements Runnable {
     BufferedReader reader;
     BufferedWriter writer;
 
-    public LinkedList<Call> callsOnHold = new LinkedList<>();
+    public LinkedList<String> callsOnHold = new LinkedList<>();
 
     public Handler(Socket socket) throws IOException {
         try {
@@ -40,7 +40,7 @@ public class Handler implements Runnable {
         while(socket.isConnected()) {
             try {
                 message = reader.readLine();
-                callsOnHold.add(Call.fromString(message));
+                callsOnHold.add(message);
             } catch (Exception e) {
                 try {
                     if (this.socket != null) this.socket.close();
