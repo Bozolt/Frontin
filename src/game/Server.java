@@ -78,6 +78,8 @@ public class Server extends JPanel implements WindowListener {
                 else {System.out.println(key+": "+message);}
             }
 
+            handler.sendMessage("hear me?");
+
             
         }
         

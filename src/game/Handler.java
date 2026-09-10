@@ -51,11 +51,11 @@ public class Handler implements Runnable {
         }
     }
 
-    public void sendMessage(Distribution message) {
+    public void sendMessage(String message) {
     
         try {
 
-            writer.write(message.toString());
+            writer.write(message);
             writer.newLine();
             writer.flush();
 
