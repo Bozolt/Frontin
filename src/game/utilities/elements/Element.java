@@ -4,6 +4,8 @@ import game.exceptions.IllegalFormattingException;
 import game.exceptions.IllegalUnpackingException;
 import game.utilities.Encoder;
 
+import java.awt.event.WindowListener;
+
 public class Element {
     
     public final int KEY;
@@ -20,6 +22,10 @@ public class Element {
         return new Element(Encoder.decodeInt(base));
     }
     
+    public void patch(String content) {
+        throw new UnsupportedOperationException("Unimplemented method");
+    }
+
     public String toCode() {
         return Encoder.encodeInt(this.KEY);
     }

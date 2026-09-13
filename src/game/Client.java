@@ -141,7 +141,7 @@ public class Client extends JPanel implements WindowListener {
                     while (socket.isConnected()) {
                         try {
                             message = reader.readLine();
-                            distributionsOnHold.add(Distribution.fromString(message));
+                            //distributionsOnHold.add(Distribution.fromString(message));
                         } catch (Exception e) {
                             try {
                                 if (socket != null) socket.close();

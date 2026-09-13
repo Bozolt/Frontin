@@ -1,7 +1,11 @@
 package game.messages.calls;
 
 public class Call {
-    public static Call fromString(String message) {
-        return null;
+    public Call() {
+        throw new UnsupportedOperationException("Utility class shouldn't be constructed");
+    }
+
+    public String toString() {
+        throw new UnsupportedOperationException("Unimplemented method");
     }
 }

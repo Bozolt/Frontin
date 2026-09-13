@@ -40,7 +40,7 @@ public class Handler implements Runnable {
         while(socket.isConnected()) {
             try {
                 message = reader.readLine();
-                callsOnHold.add(Call.fromString(message));
+                //callsOnHold.add(Call.fromString(message));
             } catch (Exception e) {
                 try {
                     if (this.socket != null) this.socket.close();

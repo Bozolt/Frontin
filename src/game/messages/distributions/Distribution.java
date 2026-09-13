@@ -4,23 +4,11 @@ import game.exceptions.IllegalFormattingException;
 import game.exceptions.UndefinedMessageTypeException;
 
 public class Distribution {
-    public static Distribution fromString(String message) throws Exception {
-        String parts[] = message.split(";");
-        if (parts.length <= 1) throw new IllegalFormattingException("Illegally formatted String");
-        switch (parts[0]) {
-            case "Post":
-                return null;
-                //return new Post(message, Element.fromString(parts[1]));
-        
-            default:
-                break;
-        }
-        
-        throw new UndefinedMessageTypeException("Undefined message type or misformatted message");
-    }
+    //master class
+    public Distribution() {throw new UnsupportedOperationException("Utility class shouldn't be constructed");}
 
     public String toString() {
-        return "";
+        throw new UnsupportedOperationException("Unimplemented method");
     }
 
 }

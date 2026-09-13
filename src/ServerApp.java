@@ -22,6 +22,8 @@ public class ServerApp {
 
         server.setup();
 
+        
+
         while (true) {server.run();}
     }
 }
