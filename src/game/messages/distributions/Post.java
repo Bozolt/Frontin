@@ -1,6 +1,6 @@
 package game.messages.distributions;
 
-import game.utilities.Element;
+import game.utilities.elements.Element;
 
 public class Post extends Distribution {
     String user;

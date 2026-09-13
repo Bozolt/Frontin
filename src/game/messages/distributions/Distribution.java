@@ -2,7 +2,6 @@ package game.messages.distributions;
 
 import game.exceptions.IllegalFormattingException;
 import game.exceptions.UndefinedMessageTypeException;
-import game.utilities.Element;
 
 public class Distribution {
     public static Distribution fromString(String message) throws Exception {
@@ -10,7 +9,8 @@ public class Distribution {
         if (parts.length <= 1) throw new IllegalFormattingException("Illegally formatted String");
         switch (parts[0]) {
             case "Post":
-                return new Post(message, Element.fromString(parts[1]));
+                return null;
+                //return new Post(message, Element.fromString(parts[1]));
         
             default:
                 break;
@@ -20,7 +20,7 @@ public class Distribution {
     }
 
     public String toString() {
-        return "Undefined Message";
+        return "";
     }
 
 }

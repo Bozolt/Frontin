@@ -1,6 +1,6 @@
 package game.messages.distributions;
 
-import game.utilities.Element;
+import game.utilities.elements.Element;
 
 public class Patch extends Distribution {
     String user;

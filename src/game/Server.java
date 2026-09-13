@@ -70,20 +70,6 @@ public class Server extends JPanel implements WindowListener {
         }
         
         
-        for (String key : handlers.keySet()) {
-            Handler handler = handlers.get(key);
-            if (handler.callsOnHold.size() != 0) {
-                String message = handler.callsOnHold.pop();
-                if (message == null) {handlers.remove(key);}
-                else {System.out.println(key+": "+message);}
-            }
-
-            handler.sendMessage("hear me?");
-
-            
-        }
-        
-        
     }
 
     public void setup() {

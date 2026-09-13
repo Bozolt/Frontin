@@ -39,7 +39,7 @@ public class Client extends JPanel implements WindowListener {
     Socket socket;
     public BufferedWriter writer;
     BufferedReader reader;
-    LinkedList<String> distributionsOnHold = new LinkedList<>();
+    LinkedList<Distribution> distributionsOnHold = new LinkedList<>();
     boolean listening = false;
 
     private String name;
@@ -101,12 +101,6 @@ public class Client extends JPanel implements WindowListener {
         if (socket != null && socket.isConnected()) {
             if (!listening) {listenOnMessage();}
 
-
-            if (distributionsOnHold.size() != 0) {
-                String message = distributionsOnHold.pop();
-                System.out.println(": "+message);
-            }
-
             //sendMessage("asda");
         }
 
@@ -147,7 +141,7 @@ public class Client extends JPanel implements WindowListener {
                     while (socket.isConnected()) {
                         try {
                             message = reader.readLine();
-                            distributionsOnHold.add(message);
+                            distributionsOnHold.add(Distribution.fromString(message));
                         } catch (Exception e) {
                             try {
                                 if (socket != null) socket.close();

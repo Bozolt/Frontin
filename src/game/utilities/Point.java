@@ -11,10 +11,15 @@ public class Point {
         this.y = y;
     }
 
-    public static Point fromString(String base) throws Exception {
-        if (base.contains("<1>")) throw new IllegalUnpackingException("Package is the incorrect depth, the initial Package was unpacked in an incorrect order");
-        String parts[] = base.split("<0>");
-        if (parts.length == 2) throw new IllegalFormattingException("Illegally formatted Point definer");
-        return new Point(Double.parseDouble(parts[0]), Double.parseDouble(parts[1]));
+    public static Point fromCode(String base) throws Exception {
+        if (base.length() != 8) throw new IllegalArgumentException("Malformed constructor or not constructor passed");
+
+        StringBuilder s = new StringBuilder(base);
+
+        return new Point(Encoder.decodeDouble(s.substring(0, 4)), Encoder.decodeDouble(s.substring(4, 8)));
+    }
+
+    public String toCode() {
+        return Encoder.encodeDouble(this.x)+Encoder.encodeDouble(this.y);
     }
 }
