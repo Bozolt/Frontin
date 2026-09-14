@@ -1,7 +1,6 @@
 package game.messages.distributions;
 
 import game.utilities.Encoder;
-import game.utilities.elements.Element;
 
 public class Delete extends Distribution {
     //Data remover
@@ -9,12 +8,14 @@ public class Delete extends Distribution {
     final int SUBJECT;
     final byte UC;
     public static final byte ID = -0b1111110;
+    final long timeStamp;
     final String HEADER;
-    public Delete(byte UC, short USER, int SUBJECT) {
+    public Delete(byte UC, short USER, int SUBJECT, long timeStamp) {
         this.USER = USER;
         this.SUBJECT = SUBJECT;
         this.UC = UC;
-        this.HEADER = Encoder.encodeBytePair(this.ID, this.UC)+""+Encoder.encodeShort(this.USER)+""+Encoder.encodeInt(this.SUBJECT);
+        this.timeStamp = timeStamp;
+        this.HEADER = Encoder.encodeBytePair(this.ID, this.UC)+""+Encoder.encodeShort(this.USER)+""+Encoder.encodeInt(this.SUBJECT)+""+Encoder.encodeLong(timeStamp);
     }
 
     public String toString() {

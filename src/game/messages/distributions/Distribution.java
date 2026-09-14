@@ -11,4 +11,6 @@ public class Distribution {
         throw new UnsupportedOperationException("Unimplemented method");
     }
 
+    public static String encodeContent() {throw new UnsupportedOperationException("Unimplemented method");}
+
 }

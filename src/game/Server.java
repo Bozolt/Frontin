@@ -2,6 +2,8 @@ package game;
 
 import javax.swing.JPanel;
 
+import game.utilities.elements.Element;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -30,6 +32,8 @@ public class Server extends JPanel implements WindowListener {
         setPreferredSize(new Dimension(1280, 720));
         System.out.println(InetAddress.getLocalHost().getHostAddress());
     }
+
+    public static HashMap<Integer, Element> instance = new HashMap<>();
     
     public void run() {
         try {

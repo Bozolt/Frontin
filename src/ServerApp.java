@@ -2,6 +2,7 @@ import javax.swing.JFrame;
 
 import game.Server;
 import game.utilities.Encoder;
+import game.utilities.types.Float8;
 
 public class ServerApp {
     public static void main(String[] args) throws Exception {
@@ -22,7 +23,9 @@ public class ServerApp {
 
         server.setup();
 
-        
+        Float8 f = Float8.getStandard();
+
+        System.out.println(""+f.toString());
 
         while (true) {server.run();}
     }
