@@ -3,6 +3,7 @@ package game;
 import javax.swing.JPanel;
 
 import game.utilities.elements.Element;
+import game.utilities.resources.Resource;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,8 +14,14 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Server extends JPanel implements WindowListener {
     
@@ -33,7 +40,14 @@ public class Server extends JPanel implements WindowListener {
         System.out.println(InetAddress.getLocalHost().getHostAddress());
     }
 
+    //read and write
+    //holds instances
+    //0 key is designated as null and should be always ignored
     public static HashMap<Integer, Element> instance = new HashMap<>();
+    //holds the keys of the instances that had been grabbed by a thread and shouldn't be grabbed again for thread safety and data integrity
+    public static Set<Integer> grabbed = ConcurrentHashMap.newKeySet();
+    //holds keys to all existing resources; removing resources that are in use defaults them to it's respective default placeholder; shouldn't be added to or put to after buffering unless necessary
+    public static ConcurrentHashMap<Long, Resource> resource = new ConcurrentHashMap<>();
     
     public void run() {
         try {

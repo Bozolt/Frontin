@@ -14,10 +14,10 @@ public class Element {
     public final int KEY;
 
     //collection of child Elements
-    private LinkedList<Integer> collection = new LinkedList<>();
+    protected LinkedList<Integer> collection = new LinkedList<>();
 
     //key of the Element that this Element is the child of
-    private int sourceKey = 0;
+    protected int sourceKey = 0;
     
     public Element(int KEY) {
 

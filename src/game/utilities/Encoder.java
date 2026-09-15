@@ -176,5 +176,24 @@ public final class Encoder {
         return toReturn;
 
     }
+
+    public static int pow(int number, int power) throws Exception {
+        if (power < 0) throw new IllegalArgumentException("Negative exponent would be a fraction");
+        
+        int toReturn = number;
+        for (int i = 0; i < power; i ++) {
+            toReturn *= number;
+        }
+
+        return toReturn;
+    }
+
+    public static byte max(byte a, byte b) {
+        return (byte)(Math.max(a, b));
+    }
+
+    public static byte min(byte a, byte b) {
+        return (byte)(Math.min(a, b));
+    }
     
 }
