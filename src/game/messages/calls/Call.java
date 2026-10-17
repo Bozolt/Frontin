@@ -1,11 +1,23 @@
 package game.messages.calls;
 
-public class Call {
-    public Call() {
-        throw new UnsupportedOperationException("Utility class shouldn't be constructed");
-    }
+import java.util.Arrays;
 
-    public String toString() {
-        throw new UnsupportedOperationException("Unimplemented method");
+import game.utilities.Encoder;
+
+public interface Call {
+
+    public byte[] toBytes();
+
+    public static Call fromBytes(byte[] bytes) {
+        switch (Encoder.decodeShort(bytes[0], bytes[1])) {
+            case Register.ID:
+                return new Register(
+                    Encoder.decodeShort(Arrays.copyOfRange(bytes, 2, 4)),
+                    Arrays.copyOfRange(bytes, 4, bytes.length)
+                );
+        
+            default:
+                throw new IllegalArgumentException("Unknown or undefined Call type");
+        }
     }
 }

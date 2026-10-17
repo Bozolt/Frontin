@@ -2,29 +2,32 @@ package game.messages.distributions;
 
 import game.utilities.Encoder;
 
-public class Post extends Distribution {
+public class Post implements Distribution {
     //Data register
     final short USER;
     final int SUBJECT;
-    final byte UC;
-    public static final byte ID = -0b1111111;
+    //PackageableTypeID
+    final short PTID;
+    public static final byte ID = Byte.MIN_VALUE;
     final long timeStamp;
-    final String HEADER;
-    public final String CONTENT;
-    public Post(byte UC, short USER, long timeStamp, int SUBJECT, String CONTENT) {
+    public final byte[] CONTENT;
+    public Post(short PackageableTypeID, short USER, int SUBJECT, long timeStamp, byte[] CONTENT) {
         this.USER = USER;
         this.SUBJECT = SUBJECT;
-        this.UC = UC;
+        this.PTID = PackageableTypeID;
         this.timeStamp = timeStamp;
-        this.HEADER = Encoder.encodeBytePair(this.ID, this.UC)+""+Encoder.encodeShort(this.USER)+""+Encoder.encodeInt(this.SUBJECT)+""+Encoder.encodeLong(timeStamp);
         this.CONTENT = CONTENT;
     }
 
-    public static String encodeContent() {
-        return "";
-    }
-
-    public String toString() {
-        return this.HEADER+this.CONTENT;
+    @Override
+    public byte[] toBytes() {
+        return Encoder.concatArrays(new byte[][] {
+            new byte[] {ID},
+            Encoder.encodeShort(USER),
+            Encoder.encodeInt(SUBJECT),
+            Encoder.encodeShort(PTID),
+            Encoder.encodeLong(timeStamp),
+            CONTENT
+        });
     }
 }

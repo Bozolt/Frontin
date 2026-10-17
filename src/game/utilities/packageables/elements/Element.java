@@ -1,0 +1,101 @@
+package game.utilities.packageables.elements;
+
+import game.Server;
+import game.utilities.Encoder;
+import game.utilities.packageables.Package;
+import game.utilities.packageables.Packageable;
+import game.utilities.variables.StackInteger;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+public class Element implements Packageable {
+
+    //variables used to autoassign Keys
+    private static StackInteger nextKey = new StackInteger(Integer.MIN_VALUE);
+
+    //threadsafe command line to queue changes to the Element
+    protected List<String> commands = Collections.synchronizedList(new LinkedList<String>());
+    
+    //run-time identifier
+    public final int KEY;
+
+    //key of the Element that this Element is the child of
+    protected int sourceKey = 0;
+
+    //relates to the asset the element tethers to
+    protected long assetKey = 0;
+    
+    public Element() {
+        this.KEY = nextKey.value();
+    }
+
+    public Element(long assetKey) {
+        this.KEY = nextKey.value();
+        setAssetKey(assetKey);
+    }
+
+    public Element(int sourceKey) {
+        this.KEY = nextKey.value();
+        setSourceKey(sourceKey);
+    }
+
+    public Element(LinkedList<Integer> collection) {
+        this.KEY = nextKey.value();
+        for (Integer child : collection) {
+            Server.instance.get(child).updateSourceKey(this.KEY);
+        }
+    }
+
+    protected Element(int KEY, int sourceKey, long assetKey) {
+        this.KEY = KEY;
+        setAssetKey(assetKey);
+        setSourceKey(sourceKey);
+    }
+
+    public long getAssetKey() {return this.assetKey;}
+
+    protected void setAssetKey(long assetKey) {
+        this.assetKey = assetKey;
+    }
+
+    public void addCommand(String command) {commands.add(command);}
+
+    public boolean containsKey(int searchKey) {
+        int key = Server.instance.get(searchKey).sourceKey;
+        while (key != 0) {
+            Element ancestor = Server.instance.get(key);
+            if (ancestor.KEY == this.KEY) return true;
+            if (ancestor.sourceKey == 0) return false;
+            key = ancestor.sourceKey;
+        }
+        return false;
+    }
+
+    
+
+    public int getSourceKey() {
+        return this.sourceKey;
+    }
+
+    protected void setSourceKey(int sourceKey) {
+        if (sourceKey == 0) {this.sourceKey = 0; return;}
+        if (this.KEY == sourceKey) throw new IllegalArgumentException("An Element cannot be it's own source");
+        if (containsKey(sourceKey)) throw new IllegalArgumentException("An Element's child cannot be it's ancestor");
+        this.sourceKey = sourceKey;
+    }
+
+    public void updateSourceKey(int sourceKey) {
+
+    }
+
+    public byte[] toBytes() {
+        return Encoder.concatArrays(new byte[][] {
+            Encoder.encodeInt(KEY),
+            Encoder.encodeInt(sourceKey),
+            Encoder.encodeLong(assetKey)
+        });
+    }
+
+}

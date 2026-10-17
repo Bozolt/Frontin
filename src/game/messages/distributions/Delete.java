@@ -2,23 +2,25 @@ package game.messages.distributions;
 
 import game.utilities.Encoder;
 
-public class Delete extends Distribution {
+public class Delete implements  Distribution {
     //Data remover
     final short USER;
     final int SUBJECT;
-    final byte UC;
-    public static final byte ID = -0b1111110;
+    public static final byte ID = Byte.MIN_VALUE+1;
     final long timeStamp;
-    final String HEADER;
-    public Delete(byte UC, short USER, int SUBJECT, long timeStamp) {
+    public Delete(short USER, int SUBJECT, long timeStamp) {
         this.USER = USER;
         this.SUBJECT = SUBJECT;
-        this.UC = UC;
         this.timeStamp = timeStamp;
-        this.HEADER = Encoder.encodeBytePair(this.ID, this.UC)+""+Encoder.encodeShort(this.USER)+""+Encoder.encodeInt(this.SUBJECT)+""+Encoder.encodeLong(timeStamp);
     }
 
-    public String toString() {
-        return this.HEADER;
+    @Override
+    public byte[] toBytes() {
+        return Encoder.concatArrays(new byte[][] {
+            new byte[] {ID},
+            Encoder.encodeShort(USER),
+            Encoder.encodeInt(SUBJECT),
+            Encoder.encodeLong(timeStamp)
+        });
     }
 }

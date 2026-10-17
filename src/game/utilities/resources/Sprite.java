@@ -1,6 +1,6 @@
 package game.utilities.resources;
 
-import game.utilities.masks.Mask;
+import game.utilities.packageables.masks.Mask;
 
 public class Sprite extends Resource {
     Mask mask;

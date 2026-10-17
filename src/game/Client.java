@@ -6,28 +6,21 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import game.messages.calls.Call;
-import game.messages.distributions.Distribution;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.LayoutManager;
-import java.awt.Rectangle;
-import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.Inet4Address;
-import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Client extends JPanel implements WindowListener {
 
@@ -37,9 +30,9 @@ public class Client extends JPanel implements WindowListener {
     Dimension previousResolution = new Dimension(0, 0);
 
     Socket socket;
-    public BufferedWriter writer;
-    BufferedReader reader;
-    LinkedList<Distribution> distributionsOnHold = new LinkedList<>();
+    public DataOutputStream writer;
+    DataInputStream reader;
+    List<byte[]> distributionsOnHold = Collections.synchronizedList(new LinkedList<>());
     boolean listening = false;
 
     private String name;
@@ -78,10 +71,9 @@ public class Client extends JPanel implements WindowListener {
             if (sendButton.getModel().isPressed()) {
                 try {
                     socket = new Socket(Inet4Address.getByName(addressField.getText()).getCanonicalHostName(), Server.port);
-                    reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                    reader = new DataInputStream(socket.getInputStream());
+                    writer = new DataOutputStream(socket.getOutputStream());
                     name = nameField.getText();
-                    sendMessage(name);
 
                     this.removeAll();
                     Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -102,6 +94,7 @@ public class Client extends JPanel implements WindowListener {
             if (!listening) {listenOnMessage();}
 
             //sendMessage("asda");
+            
         }
 
         repaint();
@@ -121,12 +114,8 @@ public class Client extends JPanel implements WindowListener {
 
     }
 
-    public void sendMessage(String message) {
-        try {
-            writer.write(message);
-            writer.newLine();
-            writer.flush();
-        } catch (Exception e) {e.printStackTrace();}
+    public void sendMessage() {
+        throw new UnsupportedOperationException("Unimplemented method");
     }
 
     public void listenOnMessage() {
@@ -134,15 +123,21 @@ public class Client extends JPanel implements WindowListener {
             new Runnable() {
                 @Override
                 public void run() {
-                    String message;
 
                     listening = true;
 
-                    while (socket.isConnected()) {
+                    while (listening) {
                         try {
-                            message = reader.readLine();
-                            //distributionsOnHold.add(Distribution.fromString(message));
+                            int packetLength = Short.toUnsignedInt(reader.readShort());
+
+                            byte[] packet = new byte[packetLength];
+
+                            reader.readFully(packet);
+
+                            distributionsOnHold.add(packet);
+
                         } catch (Exception e) {
+                            listening = false;
                             try {
                                 if (socket != null) socket.close();
                                 if (reader != null) reader.close();

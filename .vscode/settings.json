@@ -4,5 +4,6 @@
     "java.project.referencedLibraries": [
         "lib/**/*.jar"
     ],
-    "dotnet.defaultSolution": "Frontin.sln"
+    "dotnet.defaultSolution": "Frontin.sln",
+    "chat.disableAIFeatures": true
 }

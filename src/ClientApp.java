@@ -5,6 +5,8 @@ import game.Server;
 
 public class ClientApp {
     public static void main(String[] args) throws Exception {
+
+        System.out.println(Integer.toHexString(5));
         
         JFrame frame = new JFrame("Frontin");
 

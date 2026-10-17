@@ -2,25 +2,34 @@ package game.messages.distributions;
 
 import game.utilities.Encoder;
 
-public class Patch extends Distribution {
+public class Patch implements Distribution {
     //Data replacer
     final short USER;
     final int SUBJECT;
-    final byte UC;
-    public static final byte ID = -0b1111011;
+    final short PTID;
+    final short VTID;
+    public static final byte ID = Byte.MIN_VALUE+4;
     final long timeStamp;
-    final String HEADER;
-    final String CONTENT;
-    public Patch(byte UC, short USER, int SUBJECT, long timeStamp, String CONTENT) {
+    final byte[] CONTENT;
+    public Patch(short PackageableTypeID, short VariableTypeID, short USER, int SUBJECT, long timeStamp, byte[] CONTENT) {
         this.USER = USER;
         this.SUBJECT = SUBJECT;
-        this.UC = UC;
+        this.PTID = PackageableTypeID;
+        this.VTID = VariableTypeID;
         this.timeStamp = timeStamp;
-        this.HEADER = Encoder.encodeBytePair(this.ID, this.UC)+""+Encoder.encodeShort(this.USER)+""+Encoder.encodeInt(this.SUBJECT)+""+Encoder.encodeLong(timeStamp);
         this.CONTENT = CONTENT;
     }
 
-    public String toString() {
-        return this.HEADER+this.CONTENT;
+    @Override
+    public byte[] toBytes() {
+        return Encoder.concatArrays(new byte[][] {
+            new byte[] {ID},
+            Encoder.encodeShort(USER),
+            Encoder.encodeInt(SUBJECT),
+            Encoder.encodeShort(PTID),
+            Encoder.encodeShort(VTID),
+            Encoder.encodeLong(timeStamp),
+            CONTENT
+        });
     }
 }

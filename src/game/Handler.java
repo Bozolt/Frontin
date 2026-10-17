@@ -2,6 +2,10 @@ package game;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -14,17 +18,17 @@ import game.messages.distributions.Distribution;
 public class Handler implements Runnable {
 
     Socket socket;
-    BufferedReader reader;
-    BufferedWriter writer;
+    DataInputStream reader;
+    DataOutputStream writer;
 
-    public LinkedList<Call> callsOnHold = new LinkedList<>();
+    public LinkedList<byte[]> callsOnHold = new LinkedList<>();
 
     public Handler(Socket socket) throws IOException {
         try {
 
             this.socket = socket;
-            this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            this.reader = new DataInputStream(socket.getInputStream());
+            this.writer = new DataOutputStream(socket.getOutputStream());
 
         } catch (Exception e) {
             if (this.socket != null) this.socket.close();
@@ -39,8 +43,14 @@ public class Handler implements Runnable {
 
         while(socket.isConnected()) {
             try {
-                message = reader.readLine();
-                //callsOnHold.add(Call.fromString(message));
+                int packetLength = Byte.toUnsignedInt(reader.readByte());
+
+                byte[] packet = new byte[packetLength];
+
+                reader.readFully(packet);
+
+                callsOnHold.add(packet);
+
             } catch (Exception e) {
                 try {
                     if (this.socket != null) this.socket.close();
@@ -53,13 +63,7 @@ public class Handler implements Runnable {
 
     public void sendMessage(Distribution message) {
     
-        try {
-
-            writer.write(message.toString());
-            writer.newLine();
-            writer.flush();
-
-        } catch (Exception e) {e.printStackTrace();}
+        throw new UnsupportedOperationException("Unimplemented method");
 
     }
     

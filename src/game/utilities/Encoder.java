@@ -1,5 +1,7 @@
 package game.utilities;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -84,108 +86,147 @@ public final class Encoder {
     }
     */
 
-    public static String encodeShort(short s) {
-        //codes a short to a single unicode character string
-        return ""+((char)s);
+    public static byte[] encodeShort(short s) {
+        //codes a short to two bytes
+        return new byte[] {(byte)(s >> 8), (byte)s};
     }
 
-    public static short decodeShort(String code) {
-        //decodes 1 unicode character to a short
+    public static short decodeShort(byte a, byte b) {
+        //decodes 2 bytes to a short
         
-        if (code.length() != 1) throw new IllegalArgumentException("NO");
-        
-        return (short)code.charAt(0);
+        return (short)((a & 0xFF) << 8 | (b & 0xFF));
     }
 
-    public static short decodeShort(char code) {
-        return (short)code;
+    public static short decodeShort(byte[] bytes) {
+        if (bytes.length != 2) throw new IllegalArgumentException("Cannot decode more or less than 2 bytes into a short");
+
+        return (short)((bytes[0] & 0xff) << 8 | (bytes[1] & 0xff));
     }
 
-    public static String encodeInt(int integer) {
-        //codes an integer to 2 unicode characters
-        StringBuilder hex = new StringBuilder(Integer.toHexString(integer));
-        int parts[] = new int[] {Integer.parseInt(hex.substring(0, 4), 16), Integer.parseInt(hex.substring(4, 8), 16)};
-        return (char)parts[0]+""+(char)parts[1];
+    public static byte[] encodeInt(int i) {
+        //codes an integer to 4 bytes
+
+        return new byte[] {(byte)(i >> 24), (byte)(i >> 16), (byte)(i >> 8), (byte)(i)};
     }
 
-    public static int decodeInt(String code) {
+    public static int decodeInt(byte[] bytes) {
         //decodes 2 unicode characters to integers
 
-        if (code.length() != 2) throw new IllegalArgumentException("NO");
+        if (bytes.length != 4) throw new IllegalArgumentException("Cannot decode more or less than 4 bytes into an integer");
         
-        return Integer.parseUnsignedInt(Integer.toHexString((int)code.charAt(0))+Integer.toHexString((int)code.charAt(1)), 16);
+        return ((bytes[0] & 0xff) << 24 | (bytes[1] & 0xff) << 16 | (bytes[2] & 0xff) << 8 | (bytes[3] & 0xff));
     }
 
-    public static String encodeLong(long l) {
-        //codes a long to 4 unicode characters
+    public static byte[] encodeLong(long l) {
+        //codes a long to 8 bytes
 
-        StringBuilder hex = new StringBuilder(Long.toHexString(l));
-
-        int parts[] = new int[] {Integer.parseInt(hex.substring(0, 4), 16), Integer.parseInt(hex.substring(4, 8), 16), Integer.parseInt(hex.substring(8, 12), 16), Integer.parseInt(hex.substring(12, 16), 16)};
-        return (char)parts[0]+""+(char)parts[1]+""+(char)parts[2]+""+(char)parts[3];
+        return new byte[] {
+            (byte)(l >> 56), (byte)(l >> 48), (byte)(l >> 40), (byte)(l >> 32), (byte)(l >> 24), (byte)(l >> 16), (byte)(l >> 8), (byte)(l)
+        };
     }
 
-    public static long decodeLong(String code) {
-        //decodes 4 unicode characters to long
+    public static long decodeLong(byte[] bytes) {
+        //decodes 8 bytes into a long
 
-        if (code.length() != 4) throw new IllegalArgumentException("NO");
+        if (bytes.length != 8) throw new IllegalArgumentException("Cannot decode more or less than 8 bytes into a long");
 
-        return Long.parseUnsignedLong((Integer.toHexString((int)code.charAt(0))+Integer.toHexString((int)code.charAt(1))+Integer.toHexString((int)code.charAt(2))+Integer.toHexString((int)code.charAt(3))), 16);
+        return (
+            (long)(bytes[0] & 0xff) << 56
+            | (long)(bytes[1] & 0xff) << 48
+            | (long)(bytes[2] & 0xff) << 40
+            | (long)(bytes[3] & 0xff) << 32
+            | (long)(bytes[4] & 0xff) << 24
+            | (long)(bytes[5] & 0xff) << 16
+            | (long)(bytes[6] & 0xff) << 8
+            | (long)(bytes[7] & 0xff)
+        );
     }
 
-    public static String encodeDouble(double d) {
+    public static byte[] encodeFloat(float f) {
+        int i = Float.floatToIntBits(f);
+        return new byte[] {(byte)(i >> 24), (byte)(i >> 16), (byte)(i >> 8), (byte)(i)};
+    }
+
+    public static float decodeFloat(byte[] bytes) {
+        if (bytes.length != 4) throw new IllegalArgumentException("Cannot decode more or less than 4 bytes into an float");
+
+
+        
+        return Float.intBitsToFloat((bytes[0] & 0xff) << 24 | (bytes[1] & 0xff) << 16 | (bytes[2] & 0xff) << 8 | (bytes[3] & 0xff));
+    }
+
+    public static byte[] encodeDouble(double d) {
         //codes an double to 4 unicode characters
-        long l = Double.doubleToRawLongBits(d);
-        StringBuilder hex = new StringBuilder(Long.toHexString(l));
+
+        long l = Double.doubleToLongBits(d);
         
-        int parts[] = new int[] {Integer.parseInt(hex.substring(0, 4), 16), Integer.parseInt(hex.substring(4, 8), 16), Integer.parseInt(hex.substring(8, 12), 16), Integer.parseInt(hex.substring(12, 16), 16)};
-        return (char)parts[0]+""+(char)parts[1]+""+(char)parts[2]+""+(char)parts[3];
+        return new byte[] {
+            (byte)(l >> 56), (byte)(l >> 48), (byte)(l >> 40), (byte)(l >> 32), (byte)(l >> 24), (byte)(l >> 16), (byte)(l >> 8), (byte)(l)
+        };
     }
 
-    public static double decodeDouble(String code) {
+    public static double decodeDouble(byte[] bytes) {
         //decodes 4 unicode characters to double
 
-        if (code.length() != 4) throw new IllegalArgumentException("NO");
+        if (bytes.length != 8) throw new IllegalArgumentException("Cannot decode more or less than 8 bytes into a float");
 
-        return Double.longBitsToDouble(Long.parseUnsignedLong((Integer.toHexString((int)code.charAt(0))+Integer.toHexString((int)code.charAt(1))+Integer.toHexString((int)code.charAt(2))+Integer.toHexString((int)code.charAt(3))), 16));
+        return Double.longBitsToDouble(
+            (long)(bytes[0] & 0xff) << 56
+            | (long)(bytes[1] & 0xff) << 48
+            | (long)(bytes[2] & 0xff) << 40
+            | (long)(bytes[3] & 0xff) << 32
+            | (long)(bytes[4] & 0xff) << 24
+            | (long)(bytes[5] & 0xff) << 16
+            | (long)(bytes[6] & 0xff) << 8
+            | (long)(bytes[7] & 0xff)
+        );
     }
 
-    public static String encodeBytePair(byte a, byte b) {
-        return Encoder.encodeShort((short)((a << 8) + b));
+    public static byte encodeBoolean(boolean b) {
+        //encodes a boolean to a byte
+        return b ? (byte)(1) : (byte)(0);
     }
 
-    public static byte[] decodeBytePair(String code) {
-        if (code.length() != 1) throw new IllegalArgumentException("NO");
+    public static boolean decodeBoolean(byte value) {
+        if (value == 1) return true;
+        if (value == 0) return false;
+        throw new IllegalArgumentException("Paramter isn't encoded boolean");
+    }
 
-        short combine = Encoder.decodeShort(code);
-        byte toReturn[] = new byte[2];
-        if ((Short.reverseBytes(combine) & 1) == 1) {toReturn[0] = (byte)((byte)(combine >> 8)+1);}
-        else {toReturn[0] = (byte)(combine >> 8);}
-        toReturn[1] = (byte)combine;
+    public static byte encode8Booleans(boolean b[]) {
+        //encodes 8 bits into a byte
+
+        if (b.length != 8) throw new IllegalArgumentException("Cannot encode more or less than 8 bits into a byte");
+        byte toReturn = 0;
+
+        for (boolean value : b) {
+            toReturn = (byte)(toReturn << 1);
+            
+
+            if (value) {
+                toReturn = (byte)(toReturn | 1);
+            }
+        }
 
         return toReturn;
     }
 
-    public static byte[] decodeBytePair(char code) {
-        short combine = Encoder.decodeShort(code);
-        byte toReturn[] = new byte[2];
-        if ((Short.reverseBytes(combine) & 1) == 1) {toReturn[0] = (byte)((byte)(combine >> 8)+1);}
-        else {toReturn[0] = (byte)(combine >> 8);}
-        toReturn[1] = (byte)combine;
+    public static boolean[] decode8Booleans(byte b) {
+        //decodes one byte into 8 bits
+
+        boolean toReturn[] = new boolean[8];
+        
+        for (int i = 7; i >= 0; i --) {
+            toReturn[i] = ((b >> i & 1) == 1);
+        }
 
         return toReturn;
-
     }
 
     public static int pow(int number, int power) throws Exception {
         if (power < 0) throw new IllegalArgumentException("Negative exponent would be a fraction");
-        
-        int toReturn = number;
-        for (int i = 0; i < power; i ++) {
-            toReturn *= number;
-        }
 
-        return toReturn;
+        return (int)Math.pow(number, power);
     }
 
     public static byte max(byte a, byte b) {
@@ -194,6 +235,41 @@ public final class Encoder {
 
     public static byte min(byte a, byte b) {
         return (byte)(Math.min(a, b));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T concatArrays(T[] arrays) {
+
+        if (arrays.length == 0) return null;
+        if (arrays.length == 1) return arrays[0];
+        
+        for (T t : arrays) {
+            if (!t.getClass().isArray()) throw new IllegalArgumentException("Only arrays are accepted");
+        }
+
+        Class<?> compType = arrays[0].getClass().arrayType();
+
+        for (T t : arrays) {
+            if (!t.getClass().arrayType().equals(compType)) throw new IllegalArgumentException("Arrays aren't of the same type");
+        }
+
+        int lengths[] = new int[arrays.length];
+        int sumLength = 0;
+        for (int i = 0; i < arrays.length; i ++) {
+            lengths[i] = Array.getLength(arrays[i]);
+            sumLength += lengths[i];
+        }
+
+        T toReturn = (T)(Array.newInstance(arrays[0].getClass().componentType(), sumLength));
+
+        int track = 0;
+        for (int i = 0; i < lengths.length; i ++) {
+            System.arraycopy(arrays[i], 0, toReturn, track, lengths[i]);
+            track += lengths[i];
+        }
+
+        return toReturn;
+
     }
     
 }
