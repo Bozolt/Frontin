@@ -46,6 +46,9 @@ public final class PolygonMask implements Mask, Packageable {
 
     }
 
+    @Override 
+    public int getPackageID() {return Packageable.Package.PolygonMask.ordinal();}
+
     @Override
     public Point[] getPoints() {
         return this.points;

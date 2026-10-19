@@ -5,6 +5,7 @@ import java.util.Arrays;
 import game.utilities.Encoder;
 
 public class Point implements Packageable {
+    
     public double x, y;
 
     public Point(double x, double y) {
@@ -28,4 +29,7 @@ public class Point implements Packageable {
     public byte[] toBytes() {
         return Encoder.concatArrays(new byte[][] {Encoder.encodeDouble(x), Encoder.encodeDouble(y)});
     }
+
+    @Override 
+    public int getPackageID() {return Packageable.Package.Point.ordinal();}
 }

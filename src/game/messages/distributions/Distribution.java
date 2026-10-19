@@ -1,7 +1,9 @@
 package game.messages.distributions;
 
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 
+import game.utilities.DecodeableByteArrayInputStream;
 import game.utilities.Encoder;
 
 public interface Distribution {
@@ -9,7 +11,7 @@ public interface Distribution {
     public byte[] toBytes();
 
     public static Distribution fromBytes(byte[] bytes) {
-        
+        DecodeableByteArrayInputStream stream = new DecodeableByteArrayInputStream(new ByteArrayInputStream(bytes));
         switch (bytes[0]) {
             case Delete.ID:
                 return new Delete(

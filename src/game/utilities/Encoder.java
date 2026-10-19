@@ -2,89 +2,9 @@ package game.utilities;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
-import game.exceptions.IllegalFormattingException;
 
 public final class Encoder {
     private Encoder() {throw new UnsupportedOperationException("Utility class shouldn't be constructed");}
-    /*
-    public static String wrap(String[] contents) throws Exception {
-        if (contents.length <= 1) throw new IllegalArgumentException("Too few ("+contents.length+") contents passed to package");
-
-        int depth = 0;
-
-        for (String part : contents) {
-            depth = Math.max(depth, getDepth(part));
-        }
-
-        String leveledContents[] = contents.clone();
-
-        for (int i = depth; i >= 0; i --) {
-            for (int j = 0; j < leveledContents.length; j ++) {
-                leveledContents[j].replaceAll("<"+i+">", "<"+(i+1)+">");
-            }
-        }
-
-        return String.join("<0>", leveledContents);
-
-    }
-
-    public static String[] unwrap(String bundle) throws Exception {
-
-        if (!bundle.contains("<0>")) throw new IllegalFormattingException("Passed argument is malformed or not a package");
-
-        String toReturn[] = bundle.split("<0>");
-
-        for (int i = 0; i < toReturn.length; i ++) {
-            int depth = 1;
-            while (true) {
-                boolean pass = false;
-                if (toReturn[i].contains("<"+depth+">")) {pass = true; break;}
-                toReturn[i].replaceAll("<"+depth+">", "<"+(depth-1)+">");
-                depth ++;
-            }
-        }
-        return toReturn;
-
-    }
-
-    public static int numberOfParts(String bundle) {
-        
-        int count = 0;
-        while (bundle.contains("<0>")) {count ++; bundle.replace("<0>", "");}
-        return count;
-
-    }
-    
-
-    public static boolean isEncoded(String bundle) {
-        return (bundle.contains("<") && bundle.contains(">"));
-    }
-
-    public static boolean isProperPackage(String bundle) {
-        if (!bundle.contains("<0>")) return false;
-        
-        for (int i = getDepth(bundle); i > 0; i --) {
-            if (!bundle.contains("<"+i+">")) return false;
-        }
-
-        return true;
-    }
-    
-
-    public static int getDepth(String bundle) {
-        int depth = 0;
-        while (true) {
-            boolean pass = false;
-            if (bundle.contains("<"+depth+">")) {pass = true; break;}
-            if (!pass) break;
-            depth ++;
-        }
-        return depth;
-    }
-    */
 
     public static byte[] encodeShort(short s) {
         //codes a short to two bytes
@@ -237,6 +157,127 @@ public final class Encoder {
         return (byte)(Math.min(a, b));
     }
 
+    public static byte[] encodeDynamically(Object value) {
+        //encodes any primitive type dynamically
+        //it can be decoded by it's sister method safely
+        //the method uses an extra byte than any given designated encoder method as it also encodes what type the primitive is
+
+        if (value == null) return null;
+
+        switch (value.getClass().getName()) {
+            case "java.lang.Byte":
+                return new byte[] {(byte)(0), (byte)value};
+                
+            case "java.lang.Short":
+                return concatArrays(new byte[][] {new byte[] {(byte)(1)}, encodeShort((short)value)});
+
+            case "java.lang.Integer":
+                return concatArrays(new byte[][] {new byte[] {(byte)(2)}, encodeInt((int)value)});
+
+            case "java.lang.Long":
+                return concatArrays(new byte[][] {new byte[] {(byte)(3)}, encodeLong((long)value)});
+
+            case "java.lang.Float":
+                return concatArrays(new byte[][] {new byte[] {(byte)(4)}, encodeFloat((float)value)});
+                
+            case "java.lang.Double":
+                return concatArrays(new byte[][] {new byte[] {(byte)(5)}, encodeDouble((double)value)});
+
+            case "java.lang.Character":
+                return concatArrays(new byte[][] {new byte[] {(byte)(6)}, encodeShort((short)(char)value)});
+
+            case "java.lang.Boolean":
+                return concatArrays(new byte[][] {new byte[] {(byte)(7)}, new byte[] {encodeBoolean((boolean)value)}});
+        
+            default:
+                throw new IllegalArgumentException("Argument is not of type primitive");
+        }
+    }
+
+    public static Class<?> getTypeOfDynamic(byte[] dynamic) {
+        //returns the wrapper class of the primitive that is encoded in the byte array in case it was encoded with encodeDynamically
+
+        if (dynamic == null) return null;
+
+        if (dynamic.length == 0) throw new IllegalArgumentException("Not a dynamically encoded variable");
+
+        switch (dynamic[0]) {
+            case 0:
+                return Byte.class;
+
+            case 1:
+                return Short.class;
+
+            case 2:
+                return Integer.class;
+
+            case 3:
+                return Long.class;
+
+            case 4:
+                return Float.class;
+
+            case 5:
+                return Double.class;
+
+            case 6:
+                return Character.class;
+
+            case 7: return Boolean.class;
+        
+            default:
+                throw new IllegalArgumentException("Not a dynamically encoded variable");
+        }        
+
+    }
+
+    public static <T> T decodeDynamicCastToType(byte[] dynamic, Class<T> type) {
+        if (dynamic == null) return null;
+
+        if (type == null) throw new IllegalArgumentException("Cannot cast to null");
+
+        if (dynamic.length == 0) throw new IllegalArgumentException("Not a dynamically encoded variable");
+
+        if (getTypeOfDynamic(dynamic) != type) throw new IllegalArgumentException("Dynamic is not of the expected type");
+
+        switch (type.getName()) {
+            case "java.lang.Byte":
+                if (dynamic.length < 2) throw new IllegalArgumentException("Not a dynamically encoded variable");
+                return type.cast(dynamic[1]);
+
+            case "java.lang.Short":
+                if (dynamic.length < 3) throw new IllegalArgumentException("Not a dynamically encoded variable");
+                return type.cast(Encoder.decodeShort(Arrays.copyOfRange(dynamic, 1, 3)));
+
+            case "java.lang.Integer":
+                if (dynamic.length < 5) throw new IllegalArgumentException("Not a dynamically encoded variable");
+                return type.cast(Encoder.decodeInt(Arrays.copyOfRange(dynamic, 1, 5)));
+
+            case "java.lang.Long":
+                if (dynamic.length < 9) throw new IllegalArgumentException("Not a dynamically encoded variable");
+                return type.cast(Encoder.decodeLong(Arrays.copyOfRange(dynamic, 1, 9)));
+
+            case "java.lang.Float":
+                if (dynamic.length < 5) throw new IllegalArgumentException("Not a dynamically encoded variable");
+                return type.cast(Encoder.decodeFloat(Arrays.copyOfRange(dynamic, 1, 5)));
+
+            case "java.lang.Double":
+                if (dynamic.length < 9) throw new IllegalArgumentException("Not a dynamically encoded variable");
+                return type.cast(Encoder.decodeDouble(Arrays.copyOfRange(dynamic, 1, 9)));
+
+            case "java.lang.Character":
+                if (dynamic.length < 3) throw new IllegalArgumentException("Not a dynamically encoded variable");
+                return type.cast((char)Encoder.decodeShort(Arrays.copyOfRange(dynamic, 1, 3)));
+
+            case "java.lang.Boolean":
+                if (dynamic.length < 2) throw new IllegalArgumentException("Not a dynamically encoded variable");
+                return type.cast(Encoder.decodeBoolean(dynamic[1]));
+        
+            default:
+                throw new IllegalArgumentException("Not a dynamically encoded variable");
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> T concatArrays(T[] arrays) {
 
@@ -244,6 +285,7 @@ public final class Encoder {
         if (arrays.length == 1) return arrays[0];
         
         for (T t : arrays) {
+            if (t == null) throw new IllegalArgumentException("Element null is not valid");
             if (!t.getClass().isArray()) throw new IllegalArgumentException("Only arrays are accepted");
         }
 

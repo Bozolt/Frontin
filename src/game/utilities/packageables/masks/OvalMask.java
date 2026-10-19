@@ -7,8 +7,8 @@ import game.utilities.packageables.Point;
 public final class OvalMask implements Mask, Packageable {
 
     private double width, height;
-    private boolean circle = false;
-    private boolean point = false;
+    private boolean isCircle = false;
+    private boolean isPoint = false;
         
     public OvalMask(double width, double height) {
         if (width <= 0) throw new IllegalArgumentException("The width of an OvalMask cannot be zero or less");
@@ -21,23 +21,30 @@ public final class OvalMask implements Mask, Packageable {
         if (radius <= 0) throw new IllegalArgumentException("The radius of a CircleMask cannot be zero or less");
         this.width = radius;
         this.height = radius;
-        this.circle = true;
+        this.isCircle = true;
     }
 
     public OvalMask() {
-        this.point = true;
+        this.isPoint = true;
+    }
+
+    public OvalMask(double width, double height, boolean[] flags) {
+        this.width = width;
+        this.height = height;
+        this.isCircle = flags[0];
+        this.isPoint = flags[1];
     }
 
     @Override
     public Point[] getPoints() {
-        if (point) return new Point[] {};
-        if (circle) return new Point[] {new Point(width, 0)};
+        if (isPoint) return new Point[] {};
+        if (isCircle) return new Point[] {new Point(width, 0)};
         return new Point[] {new Point(width, 0), new Point(0, height)};
     }
 
     @Override
     public Mask getResized(float xScale, float yScale) {
-        if (point) return this;
+        if (isPoint) return this;
         return new OvalMask(width*xScale, height*yScale);
     }
 
@@ -46,7 +53,10 @@ public final class OvalMask implements Mask, Packageable {
         return Encoder.concatArrays(new byte[][] {
             Encoder.encodeDouble(width),
             Encoder.encodeDouble(height),
-            new byte[] {Encoder.encode8Booleans(new boolean[] {circle, point, false, false, false, false, false, false})}
+            new byte[] {Encoder.encode8Booleans(new boolean[] {isCircle, isPoint, false, false, false, false, false, false})}
         });
     }
+
+    @Override 
+    public int getPackageID() {return Packageable.Package.OvalMask.ordinal();}
 }

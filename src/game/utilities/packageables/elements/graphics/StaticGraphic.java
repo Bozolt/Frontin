@@ -2,7 +2,6 @@ package game.utilities.packageables.elements.graphics;
 
 import game.Server;
 import game.utilities.Encoder;
-import game.utilities.packageables.Package;
 import game.utilities.packageables.Packageable;
 import game.utilities.packageables.Point;
 import game.utilities.packageables.elements.Element;
@@ -15,7 +14,7 @@ public class StaticGraphic extends Element {
     //Only the positive side of short is used as absolute values and negatives are to show relative position whiel staying in range of the data type (see source 30000 so for absolute to be 0 layer has to be -30000)
     protected short layer = 0;
 
-    protected boolean visible = true;
+    protected boolean isVisible = true;
 
     //Ingame position of the Graphic element; relative value
     protected Point position;
@@ -47,7 +46,7 @@ public class StaticGraphic extends Element {
 
     }
 
-    protected StaticGraphic(int KEY, int sourceKey, long assetKey, short layer, boolean visible, Point position, short group,
+    public StaticGraphic(int KEY, int sourceKey, long assetKey, short layer, boolean visible, Point position, short group,
         float imageXScale, float imageYScale) {
         super(KEY, sourceKey, assetKey);
         setRelativeLayer(layer);
@@ -152,7 +151,7 @@ public class StaticGraphic extends Element {
     }
 
     public boolean getAbsoluteVisibility() {
-        if (!visible || getSourceKey() == 0) return visible;
+        if (!isVisible || getSourceKey() == 0) return isVisible;
         int key = getSourceKey();
         while (key != 0) {
             Element ancestor = Server.instance.get(key);
@@ -167,11 +166,11 @@ public class StaticGraphic extends Element {
     }
 
     public boolean getRelativeVisibility() {
-        return visible;
+        return isVisible;
     }
 
     protected void setRelativeVisibility(boolean visible) {
-        this.visible = visible;
+        this.isVisible = visible;
     }
 
     public Point getRelativePosition() {
@@ -208,13 +207,15 @@ public class StaticGraphic extends Element {
         return Encoder.concatArrays(new byte[][] {
             super.toBytes(),
             Encoder.encodeShort(layer),
+            new byte[] {Encoder.encodeBoolean(isVisible)},
             position.toBytes(),
             Encoder.encodeShort(group),
             Encoder.encodeShort(imageXScale),
-            Encoder.encodeShort(imageYScale),
-            (mask != null ? mask.toBytes() : Encoder.encodeInt(0)),
-            new byte[] {Encoder.encodeBoolean(visible)}
+            Encoder.encodeShort(imageYScale)
         });
     }
+
+    @Override 
+    public int getPackageID() {return Packageable.Package.StaticGraphic.ordinal();}
 
 }

@@ -2,7 +2,6 @@ package game.utilities.packageables.elements;
 
 import game.Server;
 import game.utilities.Encoder;
-import game.utilities.packageables.Package;
 import game.utilities.packageables.Packageable;
 import game.utilities.variables.StackInteger;
 
@@ -48,7 +47,7 @@ public class Element implements Packageable {
         }
     }
 
-    protected Element(int KEY, int sourceKey, long assetKey) {
+    public Element(int KEY, int sourceKey, long assetKey) {
         this.KEY = KEY;
         setAssetKey(assetKey);
         setSourceKey(sourceKey);
@@ -58,6 +57,15 @@ public class Element implements Packageable {
 
     protected void setAssetKey(long assetKey) {
         this.assetKey = assetKey;
+    }
+
+    public byte[] updateAssetKey(long assetKey) {
+
+        return Encoder.concatArrays(new byte[][] {
+            Packageable.Package.Element.bytes,
+            Packageable.Variable.AssetKey.bytes,
+
+        });
     }
 
     public void addCommand(String command) {commands.add(command);}
@@ -97,5 +105,8 @@ public class Element implements Packageable {
             Encoder.encodeLong(assetKey)
         });
     }
+
+    @Override 
+    public int getPackageID() {return Packageable.Package.Element.ordinal();}
 
 }

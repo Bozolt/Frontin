@@ -1,7 +1,7 @@
 package game.utilities.packageables.elements.graphics;
 
 import game.utilities.Encoder;
-import game.utilities.packageables.Package;
+import game.utilities.packageables.Packageable;
 import game.utilities.packageables.Point;
 
 public class DynamicGraphic extends StaticGraphic {
@@ -17,12 +17,9 @@ public class DynamicGraphic extends StaticGraphic {
 
     public DynamicGraphic() {
         super();
-        
-
-
     }
 
-    protected DynamicGraphic(int KEY, int sourceKey, long assetKey, short layer, boolean visible, Point position, short group,
+    public DynamicGraphic(int KEY, int sourceKey, long assetKey, short layer, boolean visible, Point position, short group,
         float imageXScale, float imageYScale, long previousSpriteUpdate, short imageIndex, float imageSpeed) {
         super(KEY, sourceKey, assetKey, layer, visible, position, group, imageXScale, imageYScale);
         
@@ -63,5 +60,8 @@ public class DynamicGraphic extends StaticGraphic {
             Encoder.encodeFloat(imageSpeed)
         });
     }
+
+    @Override 
+    public int getPackageID() {return Packageable.Package.DynamicGraphic.ordinal();}
  
 }
