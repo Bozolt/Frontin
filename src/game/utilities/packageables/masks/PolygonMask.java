@@ -1,5 +1,9 @@
 package game.utilities.packageables.masks;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import game.utilities.Encoder;
 import game.utilities.packageables.Packageable;
 import game.utilities.packageables.Point;
@@ -8,6 +12,10 @@ import game.utilities.packageables.Point;
  * PolygonMask
  */
 public final class PolygonMask implements Mask, Packageable {
+
+    private List<byte[]> patches = Collections.synchronizedList(new LinkedList<byte[]>());
+
+    public void addPatch(byte[] patch) {patches.add(patch);}
 
     private Point points[];
 
@@ -21,7 +29,7 @@ public final class PolygonMask implements Mask, Packageable {
         
         Point newPoints[] = new Point[points.length];
         for (int i = 0; i < points.length; i ++) {
-            newPoints[i] = new Point(points[0].x*xScale, points[0].y*yScale);
+            newPoints[i] = new Point(points[i].x*xScale, points[i].y*yScale);
         }
 
         return new PolygonMask(newPoints);
@@ -34,15 +42,16 @@ public final class PolygonMask implements Mask, Packageable {
 
     @Override
     public byte[] toBytes() {
-        byte hold[][] = new byte[points.length+1][8];
-
-        hold[0] = Encoder.encodeInt(getLength());
+        byte hold[][] = new byte[points.length][];
         
-        for (int i = 1; i < hold.length+1; i ++) {
+        for (int i = 0; i < points.length; i ++) {
             hold[i] = points[i].toBytes();
         }
 
-        return Encoder.concatArrays(hold);
+        return Encoder.concatArrays(new byte[][] {
+            Encoder.encodeInt(points.length),
+            Encoder.concatArrays(hold)
+        });
 
     }
 
@@ -52,5 +61,11 @@ public final class PolygonMask implements Mask, Packageable {
     @Override
     public Point[] getPoints() {
         return this.points;
+    }
+
+    @Override
+    public boolean executePatch() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'executePatch'");
     }
 }

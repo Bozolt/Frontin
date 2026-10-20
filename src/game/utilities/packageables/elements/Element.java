@@ -11,11 +11,12 @@ import java.util.List;
 
 public class Element implements Packageable {
 
+    protected List<byte[]> patches = Collections.synchronizedList(new LinkedList<byte[]>());
+
+    public void addPatch(byte[] patch) {patches.add(patch);}
+
     //variables used to autoassign Keys
     private static StackInteger nextKey = new StackInteger(Integer.MIN_VALUE);
-
-    //threadsafe command line to queue changes to the Element
-    protected List<String> commands = Collections.synchronizedList(new LinkedList<String>());
     
     //run-time identifier
     public final int KEY;
@@ -40,13 +41,6 @@ public class Element implements Packageable {
         setSourceKey(sourceKey);
     }
 
-    public Element(LinkedList<Integer> collection) {
-        this.KEY = nextKey.value();
-        for (Integer child : collection) {
-            Server.instance.get(child).updateSourceKey(this.KEY);
-        }
-    }
-
     public Element(int KEY, int sourceKey, long assetKey) {
         this.KEY = KEY;
         setAssetKey(assetKey);
@@ -59,16 +53,13 @@ public class Element implements Packageable {
         this.assetKey = assetKey;
     }
 
-    public byte[] updateAssetKey(long assetKey) {
+    public byte[] patchReplaceAssetKey(long assetKey) {
+        byte[] update = Packageable.createPatch(Packageable.Package.Element.ordinal(), Packageable.Variable.AssetKey.ordinal(), Packageable.Patch.Replace.byteID, ((Object)assetKey));
 
-        return Encoder.concatArrays(new byte[][] {
-            Packageable.Package.Element.bytes,
-            Packageable.Variable.AssetKey.bytes,
+        addPatch(update);
 
-        });
+        return update;
     }
-
-    public void addCommand(String command) {commands.add(command);}
 
     public boolean containsKey(int searchKey) {
         int key = Server.instance.get(searchKey).sourceKey;
@@ -94,8 +85,12 @@ public class Element implements Packageable {
         this.sourceKey = sourceKey;
     }
 
-    public void updateSourceKey(int sourceKey) {
+    public byte[] patchReplaceSourceKey(long sourceKey) {
+        byte[] update = Packageable.createPatch(Packageable.Package.Element.ordinal(), Packageable.Variable.SourceKey.ordinal(), Packageable.Patch.Replace.byteID, ((Object)sourceKey));
 
+        addPatch(update);
+
+        return update;
     }
 
     public byte[] toBytes() {
@@ -108,5 +103,12 @@ public class Element implements Packageable {
 
     @Override 
     public int getPackageID() {return Packageable.Package.Element.ordinal();}
+
+    @Override
+    public boolean executePatch() {
+        for (int i = 0; i < patches.size(); i ++) {
+            
+        }
+    }
 
 }

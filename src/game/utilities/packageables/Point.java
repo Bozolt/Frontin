@@ -1,10 +1,16 @@
 package game.utilities.packageables;
 
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 import game.utilities.Encoder;
 
 public class Point implements Packageable {
+
+    private List<byte[]> patches = Collections.synchronizedList(new LinkedList<byte[]>());
+
+    public void addPatch(byte[] patch) {patches.add(patch);}
     
     public double x, y;
 
@@ -32,4 +38,10 @@ public class Point implements Packageable {
 
     @Override 
     public int getPackageID() {return Packageable.Package.Point.ordinal();}
+
+    @Override
+    public boolean executePatch() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'executePatch'");
+    }
 }

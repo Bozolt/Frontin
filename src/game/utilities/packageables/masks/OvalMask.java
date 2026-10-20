@@ -1,10 +1,18 @@
 package game.utilities.packageables.masks;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import game.utilities.Encoder;
 import game.utilities.packageables.Packageable;
 import game.utilities.packageables.Point;
 
 public final class OvalMask implements Mask, Packageable {
+
+    private List<byte[]> patches = Collections.synchronizedList(new LinkedList<byte[]>());
+
+    public void addPatch(byte[] patch) {patches.add(patch);}
 
     private double width, height;
     private boolean isCircle = false;
@@ -59,4 +67,10 @@ public final class OvalMask implements Mask, Packageable {
 
     @Override 
     public int getPackageID() {return Packageable.Package.OvalMask.ordinal();}
+
+    @Override
+    public boolean executePatch() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'executePatch'");
+    }
 }

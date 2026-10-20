@@ -47,11 +47,11 @@ public class DecodeableByteArrayInputStream {
     }
 
     public boolean readBoolean() throws Exception {
-        return Encoder.decodeBoolean((byte)(stream.read()-128));
+        return Encoder.decodeBoolean((byte)(stream.read()));
     }
 
     public boolean[] read8Boolean() throws Exception {
-        return Encoder.decode8Booleans((byte)(stream.read()-128));
+        return Encoder.decode8Booleans((byte)(stream.read()));
     }
 
 }

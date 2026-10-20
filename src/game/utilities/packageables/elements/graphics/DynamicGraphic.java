@@ -63,5 +63,11 @@ public class DynamicGraphic extends StaticGraphic {
 
     @Override 
     public int getPackageID() {return Packageable.Package.DynamicGraphic.ordinal();}
+
+    @Override
+    public boolean executePatch() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'executePatch'");
+    }
  
 }

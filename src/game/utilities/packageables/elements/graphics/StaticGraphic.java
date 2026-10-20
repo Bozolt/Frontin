@@ -218,4 +218,10 @@ public class StaticGraphic extends Element {
     @Override 
     public int getPackageID() {return Packageable.Package.StaticGraphic.ordinal();}
 
+    @Override
+    public boolean executePatch() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'executePatch'");
+    }
+
 }
