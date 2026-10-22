@@ -1,20 +1,20 @@
 package game.utilities.elements;
 
 import game.utilities.variables.IncrementInteger;
+import game.utilities.variables.StackInteger;
 
 public class Element {
-    protected static IncrementInteger keyStack = new IncrementInteger(Integer.MIN_VALUE);
+    protected static StackInteger keyStack = new StackInteger(Integer.MIN_VALUE);
 
     public final int KEY;
 
-    public int sourceKey;
+    protected int sourceKey;
 
     public Element() {
-        this.KEY = keyStack.getValue();
+        this.KEY = keyStack.value();
     }
 
-    public Element(int sourceKey) {
-        this.KEY = keyStack.getValue();
+    protected void setSourceKey(int sourceKey) {
         this.sourceKey = sourceKey;
-    }
+    }    
 }

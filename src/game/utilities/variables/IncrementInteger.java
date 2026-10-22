@@ -1,28 +1,30 @@
 package game.utilities.variables;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class IncrementInteger {
     //An integer that can only be increased in value
 
-    int value;
+    AtomicInteger value;
 
     public IncrementInteger(int value) {
-        this.value = value;
+        this.value = new AtomicInteger(value);
     }
 
-    public int getValue() {return this.value;}
+    public int getValue() {return this.getValue();}
 
     public void increment() {
-        this.value ++;
+        this.increment();;
     }
 
     public void increase(int value) {
         if (value < 0) throw new IllegalArgumentException("IncrementInteger cannot be increased by a negative number");
-        this.value += value;
+        this.increase(value);
     }
 
     public void setValue(int value) {
-        if (value < this.value) throw new IllegalArgumentException("IncrementInteger cannot be set to a smaller value");
-        this.value = value;
+        if (value < this.getValue()) throw new IllegalArgumentException("IncrementInteger cannot be set to a smaller value");
+        this.setValue(value);
     }
 
 }

@@ -1,8 +1,9 @@
 package game.utilities.resources.masks;
 
+import game.utilities.resources.Resource;
 import game.utilities.variables.Point;
 
-public class OvalMask implements Mask {
+public class OvalMask extends Resource implements Mask {
     final private double width, height;
     final private boolean isCircle, isPoint;
 

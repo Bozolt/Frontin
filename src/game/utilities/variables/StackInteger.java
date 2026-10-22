@@ -1,15 +1,16 @@
 package game.utilities.variables;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class StackInteger {
     //data structure that increases in value each time you call its current value
-    private int value;
+    private AtomicInteger value;
 
     public StackInteger(int value) {
-        this.value = value;
+        this.value = new AtomicInteger(value);
     }
 
-    public int value() {
-        value ++;
-        return value-1;
+    public int value() {;
+        return value.getAndIncrement();
     }
 }
