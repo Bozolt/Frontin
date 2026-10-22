@@ -1,7 +1,6 @@
 import javax.swing.JFrame;
 
 import game.Server;
-import game.utilities.Encoder;
 
 public class ServerApp {
     public static void main(String[] args) throws Exception {

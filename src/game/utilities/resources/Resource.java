@@ -1,5 +1,5 @@
 package game.utilities.resources;
 
-public class Resource {
+public interface Resource {
     
 }

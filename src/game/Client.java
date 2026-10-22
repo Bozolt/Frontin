@@ -6,6 +6,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import game.utilities.resources.Resource;
+import game.utilities.streamables.reconstructables.elements.Element;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -21,6 +24,7 @@ import java.net.Socket;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Client extends JPanel implements WindowListener {
 
@@ -37,6 +41,13 @@ public class Client extends JPanel implements WindowListener {
 
     private String name;
     final int port = 3000;
+
+    //read and write
+    //holds instances
+    //0 key is designated as null and should be always ignored
+    public static ConcurrentHashMap<Integer, Element> instance = new ConcurrentHashMap<>();
+    //holds keys to all existing resources; removing resources that are in use defaults them to it's respective default placeholder; shouldn't be added to or put to after buffering unless necessary
+    public static ConcurrentHashMap<Long, Resource> resource = new ConcurrentHashMap<>();
 
     public Client() throws IOException, InterruptedException {
         setFocusable(true);

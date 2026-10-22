@@ -2,8 +2,8 @@ package game;
 
 import javax.swing.JPanel;
 
-import game.utilities.packageables.elements.Element;
 import game.utilities.resources.Resource;
+import game.utilities.streamables.reconstructables.elements.Element;
 
 import java.awt.Color;
 import java.awt.Dimension;
