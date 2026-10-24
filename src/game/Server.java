@@ -3,8 +3,6 @@ package game;
 import javax.swing.JPanel;
 
 import game.utilities.resources.Resource;
-import game.utilities.streamables.reconstructables.elements.Element;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -39,7 +37,6 @@ public class Server extends JPanel implements WindowListener {
     //0 key is designated as null and should be always ignored
     public static ConcurrentHashMap<Integer, Element> instance = new ConcurrentHashMap<>();
     //holds keys to all existing resources; removing resources that are in use defaults them to it's respective default placeholder; shouldn't be added to or put to after buffering unless necessary
-    public static ConcurrentHashMap<Long, Resource> resource = new ConcurrentHashMap<>();
      
     public void run() {
         try {

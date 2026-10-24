@@ -7,8 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import game.utilities.resources.Resource;
-import game.utilities.streamables.reconstructables.elements.Element;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
