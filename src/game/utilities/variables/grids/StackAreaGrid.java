@@ -24,7 +24,11 @@ public class StackAreaGrid <T> extends HeapAreaGrid <T> {
             for (int Y = y; Y < y+height; Y ++) {
                 for (int i = areas.size()-1; i >= 0; i --) {
                     if (areas.get(i).contains(X, Y)) {
-                        ((TrackedArea<T>)areas.get(i)).coverage --;
+                        TrackedArea<T> area = ((TrackedArea<T>)areas.get(i));
+                        area.coverage --;
+                        if (area .coverage == Integer.MIN_VALUE) {
+                            areas.remove(i);
+                        }
                         break;
                     } 
                 }
