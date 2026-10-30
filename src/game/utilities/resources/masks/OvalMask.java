@@ -10,7 +10,7 @@ public class OvalMask extends Resource implements Mask {
     public OvalMask() {
         this.width = 0;
         this.height = 0;
-        this.isCircle = true;
+        this.isCircle = false;
         this.isPoint = true;
     }
 
@@ -19,7 +19,7 @@ public class OvalMask extends Resource implements Mask {
         if (radius == 0) {
             this.width = 0;
             this.height = 0;
-            this.isCircle = true;
+            this.isCircle = false;
             this.isPoint = true;
             return;
         }
@@ -35,7 +35,7 @@ public class OvalMask extends Resource implements Mask {
             if (width == 0) {
                 this.width = 0;
                 this.height = 0;
-                this.isCircle = true;
+                this.isCircle = false;
                 this.isPoint = true;
                 return;
             }
@@ -51,7 +51,15 @@ public class OvalMask extends Resource implements Mask {
         this.isPoint = false;
     }
 
-    public Point[] toPoints() {return null;}
+    public Point[] toPoints() {
+        if (isPoint) {
+            return new Point[0];
+        }
+        else if (isCircle) {
+            return new Point[] {new Point(width, width)};
+        }
+        else {return new Point[] {new Point(width, 0), new Point(0, height)};}
+    }
 
     public double getWidth() {return width;}
     public double getHeight() {return height;}
