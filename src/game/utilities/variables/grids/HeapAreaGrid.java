@@ -24,6 +24,7 @@ public class HeapAreaGrid <T> implements Grid <T> {
     @Override
     public void setArea(int x, int y, int width, int height, T value) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) throw new IllegalArgumentException("Starting position out of bounds");
+        if (x+width-1 > this.width || y+height-1 > this.height) throw new IllegalArgumentException("Ending position out of bounds");
         areas.add(new Area<>(x, y, width, height, value));
     }
 

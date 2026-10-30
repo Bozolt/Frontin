@@ -17,8 +17,7 @@ public class StackAreaGrid <T> extends HeapAreaGrid <T> {
     @Override
     public void setArea(int x, int y, int width, int height, T value) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) throw new IllegalArgumentException("Starting position out of bounds");
-
-        ArrayList<Integer> overlaps = new ArrayList<>();
+        if (x+width-1 > this.width || y+height-1 > this.height) throw new IllegalArgumentException("Ending position out of bounds");
 
         for (int X = x; X < x+width; X ++) {
             for (int Y = y; Y < y+height; Y ++) {
@@ -26,7 +25,7 @@ public class StackAreaGrid <T> extends HeapAreaGrid <T> {
                     if (areas.get(i).contains(X, Y)) {
                         TrackedArea<T> area = ((TrackedArea<T>)areas.get(i));
                         area.coverage --;
-                        if (area .coverage == Integer.MIN_VALUE) {
+                        if (area.coverage == Integer.MIN_VALUE) {
                             areas.remove(i);
                         }
                         break;
