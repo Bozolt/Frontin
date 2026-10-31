@@ -1,6 +1,5 @@
 package game.utilities.variables.grids;
 
-import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 
 public class CombiningFlatRowGrid <T> implements Grid <T> {
@@ -83,6 +82,7 @@ public class CombiningFlatRowGrid <T> implements Grid <T> {
 
             int right = high;
 
+            int index;
             if (right != left) {
                 //removes inbetweens
                 for (int i = right-left-1; i > 0; i --) {
@@ -92,17 +92,20 @@ public class CombiningFlatRowGrid <T> implements Grid <T> {
 
                 sections.add(left+1, new Section<>(start, value));
                 sections.get(left+2).i = end;
+                index = left+1;
             }
             else if (right == sections.size()-1) {
                 //incase you are adding to the very end of the list
                 if (end == (long)this.width*this.height) {
                     //incase the new section runs to the end of the grid it simply inserts
                     sections.addLast(new Section<>(start, value));
+                    index = sections.size()-1;
                 }
                 else {
                     //insert the new section after the previous last and then adds a section of the same type after itself
                     sections.addLast(new Section<>(start, value));
                     sections.addLast(new Section<>(end, sections.get(left).value));
+                    index = sections.size()-2;
                 }
             }
             else if (left == 0) {
@@ -110,27 +113,60 @@ public class CombiningFlatRowGrid <T> implements Grid <T> {
                 if (start == 0) {
                     sections.addFirst(new Section<>(0, value));
                     sections.get(1).i = end;
+                    index = 0;
                 }
                 else {
                     sections.add(1, new Section<>(start, value));
                     sections.add(2, new Section<>(end, sections.getFirst().value));
+                    index = 1;
                 }
             }
             else {
                 sections.add(left+1, new Section<>(start, value));
                 sections.add(left+2, new Section<>(end, sections.get(left).value));
+                index = left+1;
             }
 
+            //combining logic
+            left = index-1;
+            right = index+1;
+            Section<T> leftSection = left >= 0 ? sections.get(left) : null;
+            Section<T> rightSection = right < sections.size() ? sections.get(right) : null;
+            Section<T> thisSection = sections.get(index);
+            if (leftSection != null) {
+                if (leftSection.i == thisSection.i) {
+                    sections.remove(left);
+                    index --;
+                    right --;
+                }
+                else if (leftSection.value.equals(value)) {
+                    thisSection.i = leftSection.i;
+                    sections.remove(leftSection);
+                    index --;
+                    right --;
+                    leftSection = null;
+                }
+            }
+            if (rightSection != null) {
+                if (rightSection.i == thisSection.i) {
+                    sections.remove(right);
+                }
+                else if (rightSection.value.equals(value)) {
+                    sections.remove(right);
+                }
+            }
 
         }
         else {
 
             //takes it apart into Sections and calls this function recursively for each one so they fall into the condition of the if
-            //I'll add this after the bug checks
-            //I'll also add the combininb here later
+            for (int Y = y; Y < y+height-1; y ++) {
+                setArea(x, Y, width, 1, value);
+            }
+
         }
 
-        
+
 
     }
 
