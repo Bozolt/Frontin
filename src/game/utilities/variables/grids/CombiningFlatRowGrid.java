@@ -167,7 +167,7 @@ public class CombiningFlatRowGrid <T> implements Grid <T> {
 
             //cleans up any sections that run outside the grid
             while (true) {
-                if (sections.getLast().i >= (long)width*height) {sections.removeLast();}
+                if (sections.getLast().i >= (long)this.width*this.height) {sections.removeLast();}
                 else {break;}
             }
 
