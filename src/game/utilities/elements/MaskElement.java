@@ -4,6 +4,8 @@ import game.utilities.resources.masks.Mask;
 import game.utilities.resources.masks.OvalMask;
 
 public class MaskElement extends Element {
+    public int closestPosition = this.KEY;
+
     private Mask mask;
     private short group;
 

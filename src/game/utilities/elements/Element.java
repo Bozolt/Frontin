@@ -12,7 +12,7 @@ import game.utilities.variables.StackInteger;
 //Generally speaking for any Element public methods should only be called in a thread-safe context
 public class Element {
 
-    protected static StackInteger keyStack = new StackInteger(Integer.MIN_VALUE);
+    protected static StackInteger keyStack = new StackInteger(Integer.MIN_VALUE+1);
 
     public final int KEY = keyStack.value();
 

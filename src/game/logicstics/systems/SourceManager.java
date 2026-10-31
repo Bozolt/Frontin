@@ -8,6 +8,10 @@ import game.Server;
 import game.logicstics.Request;
 import game.logicstics.Response;
 import game.utilities.elements.Element;
+import game.utilities.elements.NationElement;
+import game.utilities.elements.buildingTypes.CityElement;
+import game.utilities.elements.geometric.CellElement;
+import game.utilities.elements.geometric.PositionElement;
 
 public final class SourceManager {
     
@@ -41,11 +45,39 @@ public final class SourceManager {
     public void execute() {
         for (FosterRequest request : fosters) {
             
-            Element fosterSource = Server.instance.get(request.parentKey);
-            while (fosterSource != null) {
-                
+            Element parent = Server.instance.get(request.parentKey);
+            Element child = Server.instance.get(request.childKey);
+            if (parent == null || child == null) {
+                Server.entity.get(request.entityKey).responses.add(new Response(request.requestKey, false));
             }
-
+            else {
+                switch (child) {
+                    case CityElement city:
+                        if (parent instanceof CellElement) {
+                            if (parent.getSourceKey() == Integer.MIN_VALUE) {
+                                Server.entity.get(request.entityKey).responses.add(new Response(request.requestKey, false));
+                            }
+                            else {
+                                Element grandParent = Server.instance.get(parent.getSourceKey());
+                                if (grandParent == null || !(grandParent instanceof NationElement)) {
+                                    Server.entity.get(request.entityKey).responses.add(new Response(request.requestKey, false));
+                                }
+                                else {
+                                    child.setSourceKey(request.parentKey);
+                                    Server.entity.get(request.entityKey).responses.add(new Response(request.requestKey, true));
+                                }
+                            }
+                        }
+                        else {
+                            Server.entity.get(request.entityKey).responses.add(new Response(request.requestKey, false));
+                        }
+                        break;
+                
+                    default:
+                        Server.entity.get(request.entityKey).responses.add(new Response(request.requestKey, false));
+                        break;
+                }
+            }
         }
     }
 

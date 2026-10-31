@@ -6,7 +6,7 @@ import game.utilities.resources.graphical.Graphical;
 import game.utilities.resources.graphical.Image;
 import game.utilities.resources.graphical.Sprite;
 
-public class DynamicGraphicElement extends ResourceElement implements Graphical {
+public class DynamicGraphicElement extends ResourceElement  {
     
     private float imageXScale = 1;
     private float imageYScale = 1;

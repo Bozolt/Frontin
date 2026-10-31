@@ -1,9 +1,10 @@
-package game.utilities.elements;
+package game.utilities.elements.geometric;
 
+import game.utilities.elements.Element;
 import game.utilities.variables.Cell;
 import game.utilities.variables.Point;
 
-public class CellElement {
+public class CellElement extends Element {
     private Cell position;
 
     public CellElement(long x, long y) {

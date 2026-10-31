@@ -1,6 +1,8 @@
-package game.utilities.elements;
+package game.utilities.elements.geometric;
 
 import java.awt.Point;
+
+import game.utilities.elements.Element;
 
 public class PositionElement extends Element {
     private Point position;

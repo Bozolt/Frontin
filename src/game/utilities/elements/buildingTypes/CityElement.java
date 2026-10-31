@@ -3,6 +3,7 @@ package game.utilities.elements.buildingTypes;
 import game.utilities.elements.Element;
 
 public class CityElement extends Element {
+    public int closestCell = this.KEY;
     
     protected int level;
     protected int taken;

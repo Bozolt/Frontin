@@ -2,7 +2,11 @@ package game;
 
 import javax.swing.JPanel;
 
+import game.logicstics.entities.Entity;
+import game.logicstics.entities.Nation;
 import game.utilities.elements.Element;
+import game.utilities.elements.NationElement;
+import game.utilities.planes.TerrainMap;
 import game.utilities.resources.Resource;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -37,6 +41,7 @@ public class Server extends JPanel implements WindowListener {
     //holds instances
     //0 key is designated as null and should be always ignored
     public static ConcurrentHashMap<Integer, Element> instance = new ConcurrentHashMap<>();
+    public static HashMap<Integer, Entity> entity = new HashMap<>();
      
     public void run() {
         try {
@@ -78,7 +83,16 @@ public class Server extends JPanel implements WindowListener {
 
     public void setup() {
 
+        TerrainMap.terrain.setArea(1000, 1000, 8000, 8000, 1);
 
+        for (int i = 0; i < 500; i ++) {
+            
+            NationElement newElement = new NationElement();
+            instance.put(newElement.KEY, newElement);
+            Nation newNation = new Nation(newElement.KEY);
+            entity.put(newNation.KEY, newNation);
+            
+        }
 
     }
 

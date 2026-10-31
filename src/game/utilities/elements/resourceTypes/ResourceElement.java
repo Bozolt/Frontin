@@ -5,6 +5,8 @@ import game.utilities.resources.Resource;
 
 //For any element that refers to the Resource cataloge to extend
 public class ResourceElement extends Element {
+    public int closestPosition = this.KEY;
+
     private int resourceKey;
     private final Class<?> type;
 
