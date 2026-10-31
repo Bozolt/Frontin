@@ -93,7 +93,7 @@ public class CombiningFlatRowGrid <T> implements Grid <T> {
                 sections.add(left+1, new Section<>(start, value));
                 sections.get(left+2).i = end;
             }
-            else if (right == sections.size()+1) {
+            else if (right == sections.size()-1) {
                 //incase you are adding to the very end of the list
                 if (end == (long)this.width*this.height) {
                     //incase the new section runs to the end of the grid it simply inserts
@@ -118,7 +118,7 @@ public class CombiningFlatRowGrid <T> implements Grid <T> {
             }
             else {
                 sections.add(left+1, new Section<>(start, value));
-                sections.get(right+2).i = end;
+                sections.add(left+2, new Section<>(end, sections.get(left).value));
             }
 
 
