@@ -13,8 +13,9 @@ public class DissectingFloodGrid <T> extends HeapAreaGrid <T> {
         Generally speaking faster on writes than AreaGrids running in O(n) (n as areas.size()) where n at most width*height
     */
 
-    public DissectingFloodGrid(int width, int height, T defaultValue) {
+    protected DissectingFloodGrid(int width, int height, T defaultValue) {
         super(width, height, defaultValue);
+        throw new UnsupportedOperationException("Unimplemented class");
     }
 
     @Override
