@@ -151,7 +151,7 @@ public class CombiningFlatRowGrid <T> implements Grid <T> {
                     index --;
                     right --;
                 }
-                break;
+                else {break;}
             }
             while (rightSection != null) {
                 if (rightSection.i == thisSection.i) {
@@ -162,7 +162,13 @@ public class CombiningFlatRowGrid <T> implements Grid <T> {
                     sections.remove(right);
                     rightSection = right < sections.size() ? sections.get(right) : null;
                 }
-                break;
+                else {break;}
+            }
+
+            //cleans up any sections that run outside the grid
+            while (true) {
+                if (sections.getLast().i >= (long)width*height) {sections.removeLast();}
+                else {break;}
             }
 
         }
