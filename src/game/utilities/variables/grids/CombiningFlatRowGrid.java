@@ -15,6 +15,7 @@ public class CombiningFlatRowGrid <T> implements Grid <T> {
 
     public CombiningFlatRowGrid(int width, int height, T defaultValue) {
         if (width <= 0 || height <= 0) throw new IllegalArgumentException("Grid cannot have 0 or negative dimension(s)");
+        if (defaultValue == null) throw new IllegalArgumentException("Value cannot be null");
         this.width = width;
         this.height = height;
         this.sections.add(new Section<>(0, defaultValue));
@@ -25,6 +26,7 @@ public class CombiningFlatRowGrid <T> implements Grid <T> {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) throw new IllegalArgumentException("Starting position out of bounds");
         if (x+(width-1l) >= this.width || y+(height-1l) >= this.height) throw new IllegalArgumentException("Ending position out of bounds");
         if (width <= 0 || height <= 0) throw new IllegalArgumentException("Area cannot have 0 or negative dimension(s)");
+        if (value == null) throw new IllegalArgumentException("Value cannot be null");
 
         if (width == this.width || height == 1) {
             long start = (long)y*this.width+x;
@@ -133,34 +135,41 @@ public class CombiningFlatRowGrid <T> implements Grid <T> {
             Section<T> leftSection = left >= 0 ? sections.get(left) : null;
             Section<T> rightSection = right < sections.size() ? sections.get(right) : null;
             Section<T> thisSection = sections.get(index);
-            if (leftSection != null) {
+            while (leftSection != null) {
                 if (leftSection.i == thisSection.i) {
                     sections.remove(left);
+                    left --;
+                    leftSection = left >= 0 ? sections.get(left) : null;
                     index --;
                     right --;
                 }
                 else if (leftSection.value.equals(value)) {
                     thisSection.i = leftSection.i;
                     sections.remove(leftSection);
+                    left --;
+                    leftSection = left >= 0 ? sections.get(left) : null;
                     index --;
                     right --;
-                    leftSection = null;
                 }
+                break;
             }
-            if (rightSection != null) {
+            while (rightSection != null) {
                 if (rightSection.i == thisSection.i) {
                     sections.remove(right);
+                    rightSection = right < sections.size() ? sections.get(right) : null;
                 }
                 else if (rightSection.value.equals(value)) {
                     sections.remove(right);
+                    rightSection = right < sections.size() ? sections.get(right) : null;
                 }
+                break;
             }
 
         }
         else {
 
             //takes it apart into Sections and calls this function recursively for each one so they fall into the condition of the if
-            for (int Y = y; Y < y+height-1; y ++) {
+            for (int Y = y; Y < y+height; Y ++) {
                 setArea(x, Y, width, 1, value);
             }
 
