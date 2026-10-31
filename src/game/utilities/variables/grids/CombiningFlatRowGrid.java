@@ -27,8 +27,8 @@ public class CombiningFlatRowGrid <T> implements Grid <T> {
         if (x+(width-1l) >= this.width || y+(height-1l) >= this.height) throw new IllegalArgumentException("Ending position out of bounds");
 
         if (width == this.width || height == 1) {
-            long start = (long)y*width+x;
-            long end = (long)y*width+x+width*height;
+            long start = (long)y*this.width+x;
+            long end = start+(long)width*height;
 
             long toFind = start;
 
@@ -38,7 +38,7 @@ public class CombiningFlatRowGrid <T> implements Grid <T> {
             if (sections.size() == 1) {high = 0;}
             else if (sections.size() == 2) {
                 if (sections.getLast().i <= toFind) {high = 1;}
-                high = 0;
+                else {high = 0;}
             }
             else {
                 int low = 0;
@@ -83,41 +83,67 @@ public class CombiningFlatRowGrid <T> implements Grid <T> {
             int right = high;
 
             if (right == left) {
-                if (!sections.get(left).value.equals(value)) {
-                    sections.add(right+1, new Section<>(start, value));
-                    sections.add(right+2, new Section<>(end, sections.get(right).value));
+                if (right == sections.size()+1) {
+                    //incase you are adding to the very end of the list
+                    if (end == (long)this.width*this.height) {
+                        //incase the new section runs to the end of the grid it simply inserts
+                        sections.addLast(new Section<>(start, value));
+                    }
+                    else {
+                        //insert the new section after the previous last and then adds a section of the same type after itself
+                        sections.addLast(new Section<>(start, value));
+                        sections.addLast(new Section<>(end, sections.get(left).value));
+                    }
                 }
-            }
-            else if (sections.get(left).value.equals(value)) {
-                if (sections.get(right).value.equals(value)) {
-                    for (int i = right-left; i > 0; i --) {
-                        sections.remove(left+1);
+                else if (left == 0) {
+                    //adding to the beginning of the list
+                    if (start == 0) {
+                        sections.addFirst(new Section<>(0, value));
+                        sections.get(1).i = end;
+                    }
+                    else {
+                        sections.add(1, new Section<>(start, value));
+                        sections.add(2, new Section<>(end, sections.getFirst().value));
                     }
                 }
                 else {
-                    for (int i = right-left-1; i > 0; i --) {
-                        sections.remove(left+1);
-                    }
-                }
-            }
-            else if (sections.get(right).value.equals(value)) {
-                for (int i = right-left-1; i > 0; i --) {
-                    sections.remove(right-1);
+                    sections.add(left+1, new Section<>(start, value));
+                    sections.get(right+1).i = end;
                 }
             }
             else {
                 //removes inbetweens
                 for (int i = right-left; i > 0; i --) {
                     sections.remove(left+1);
+                    right --;
                 }
 
-                if (sections.get(left).i == start) {
-                    sections.get(left).value = value;
-                    sections.get(right).i = end+1;
+                if (right == sections.size()+1) {
+                    //incase you are adding to the very end of the list
+                    if (end == (long)this.width*this.height) {
+                        //incase the new section runs to the end of the grid it simply inserts
+                        sections.addLast(new Section<>(start, value));
+                    }
+                    else {
+                        //insert the new section after the previous last and then adds a section of the same type after itself
+                        sections.addLast(new Section<>(start, value));
+                        sections.addLast(new Section<>(end, sections.get(left).value));
+                    }
+                }
+                else if (left == 0) {
+                    //adding to the beginning of the list
+                    if (start == 0) {
+                        sections.addFirst(new Section<>(0, value));
+                        sections.get(1).i = end;
+                    }
+                    else {
+                        sections.add(1, new Section<>(start, value));
+                        sections.add(2, new Section<>(end, sections.getFirst().value));
+                    }
                 }
                 else {
                     sections.add(left+1, new Section<>(start, value));
-                    sections.get(right).i = end+1;
+                    sections.get(right+1).i = end;
                 }
             }
 
