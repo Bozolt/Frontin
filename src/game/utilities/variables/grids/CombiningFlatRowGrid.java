@@ -64,7 +64,7 @@ public class CombiningFlatRowGrid <T> implements Grid <T> {
             if (sections.size() == 1) {high = 0;}
             else if (sections.size() == 2) {
                 if (sections.getLast().i <= toFind) {high = 1;}
-                high = 0;
+                else {high = 0;}
             }
             else {
                 int low = 0;
@@ -85,13 +85,15 @@ public class CombiningFlatRowGrid <T> implements Grid <T> {
 
             if (right != left) {
                 //removes inbetweens
-                for (int i = right-left; i > 0; i --) {
+                for (int i = right-left-1; i > 0; i --) {
                     sections.remove(left+1);
                     right --;
                 }
-            }
 
-            if (right == sections.size()+1) {
+                sections.add(left+1, new Section<>(start, value));
+                sections.get(left+2).i = end;
+            }
+            else if (right == sections.size()+1) {
                 //incase you are adding to the very end of the list
                 if (end == (long)this.width*this.height) {
                     //incase the new section runs to the end of the grid it simply inserts
@@ -125,6 +127,7 @@ public class CombiningFlatRowGrid <T> implements Grid <T> {
 
             //takes it apart into Sections and calls this function recursively for each one so they fall into the condition of the if
             //I'll add this after the bug checks
+            //I'll also add the combininb here later
         }
 
         
