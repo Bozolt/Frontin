@@ -9,8 +9,9 @@ import game.utilities.variables.StackInteger;
 
 public class Entity implements Runnable {
     public List<Response> responses = Collections.synchronizedList(new ArrayList<>());
+    protected StackInteger requestKeyStack = new StackInteger(Integer.MIN_VALUE);
 
-    protected static StackInteger keyStack = new StackInteger(Integer.MIN_VALUE);
+    protected static StackInteger keyStack = new StackInteger(Integer.MIN_VALUE+1);
 
     public final int KEY = keyStack.value();
 

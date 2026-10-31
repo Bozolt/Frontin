@@ -7,6 +7,7 @@ import java.util.List;
 import game.Server;
 import game.logicstics.Request;
 import game.logicstics.Response;
+import game.logicstics.entities.Entity;
 import game.utilities.elements.Element;
 import game.utilities.elements.NationElement;
 import game.utilities.elements.buildingTypes.CityElement;
@@ -20,7 +21,7 @@ public final class SourceManager {
     private static List<FosterRequest> fosters = Collections.synchronizedList(new ArrayList<>());
     private static List<OrphanRequest> orphans = Collections.synchronizedList(new ArrayList<>());
 
-    private class SourceRequest extends Request {
+    private static class SourceRequest extends Request {
         public final int parentKey, childKey;
 
         public SourceRequest(int entityKey, int requestKey, int parentKey, int childKey) {
@@ -30,19 +31,28 @@ public final class SourceManager {
         }
     }
 
-    public class FosterRequest extends SourceRequest {
+    public static class FosterRequest extends SourceRequest {
         public FosterRequest(int entityKey, int requestKey, int parentKey, int childKey) {
             super(entityKey, requestKey, parentKey, childKey);
+            fosters.add(this);
         }
     }
 
-    public class OrphanRequest extends SourceRequest {
+    public static class OrphanRequest extends SourceRequest {
         public OrphanRequest(int entityKey, int requestKey, int parentKey, int childKey) {
             super(entityKey, requestKey, parentKey, childKey);
+            orphans.add(this);
         }
     }
 
-    public void execute() {
+    private static void postResponse(int entityKey, boolean response) {
+        Entity entity = Server.entity.get(entityKey);
+        if (entity != null) {
+            entity.responses.add(new Response(entityKey, response));
+        }
+    }
+
+    public static void execute() {
         for (FosterRequest request : fosters) {
             
             Element parent = Server.instance.get(request.parentKey);
@@ -55,26 +65,26 @@ public final class SourceManager {
                     case CityElement city:
                         if (parent instanceof CellElement) {
                             if (parent.getSourceKey() == Integer.MIN_VALUE) {
-                                Server.entity.get(request.entityKey).responses.add(new Response(request.requestKey, false));
+                                postResponse(request.entityKey, false);
                             }
                             else {
                                 Element grandParent = Server.instance.get(parent.getSourceKey());
                                 if (grandParent == null || !(grandParent instanceof NationElement)) {
-                                    Server.entity.get(request.entityKey).responses.add(new Response(request.requestKey, false));
+                                    postResponse(request.entityKey, false);
                                 }
                                 else {
                                     child.setSourceKey(request.parentKey);
-                                    Server.entity.get(request.entityKey).responses.add(new Response(request.requestKey, true));
+                                    postResponse(request.entityKey, true);
                                 }
                             }
                         }
                         else {
-                            Server.entity.get(request.entityKey).responses.add(new Response(request.requestKey, false));
+                            postResponse(request.entityKey, false);
                         }
                         break;
                 
                     default:
-                        Server.entity.get(request.entityKey).responses.add(new Response(request.requestKey, false));
+                        postResponse(request.entityKey, false);
                         break;
                 }
             }

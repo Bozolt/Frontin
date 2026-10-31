@@ -224,4 +224,7 @@ public class CombiningFlatRowGrid <T> implements Grid <T> {
             this.value = value;
         }
     }
+
+    public int getWidth() {return this.width;}
+    public int getHeight() {return this.height;}
 }

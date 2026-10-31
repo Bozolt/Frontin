@@ -83,7 +83,7 @@ public class Server extends JPanel implements WindowListener {
 
     public void setup() {
 
-        TerrainMap.terrain.setArea(1000, 1000, 8000, 8000, 1);
+        TerrainMap.terrain.setArea(1000, 1000, 8000, 8000, TerrainMap.TerrainType.plain);
 
         for (int i = 0; i < 500; i ++) {
             

@@ -65,4 +65,7 @@ public class HeapAreaGrid <T> implements Grid <T> {
             return (x >= this.x && x < this.x+width && y >= this.y && y < this.y+height);
         }
     }
+
+    public int getWidth() {return this.width;}
+    public int getHeight() {return this.height;}
 }

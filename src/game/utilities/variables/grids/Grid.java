@@ -10,4 +10,7 @@ public interface Grid <T> {
 
     public T getValue(int x, int y);
 
+    public int getWidth();
+    public int getHeight();
+
 }
