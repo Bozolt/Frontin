@@ -1,19 +1,21 @@
 package game.utilities.planes;
 
-import game.utilities.variables.grids.CombiningFlatRowGrid;
+import game.utilities.variables.grids.SuperBooleanFlatRowGrid;
 
+/**
+ * TerrainMap
+ */
 public final class TerrainMap {
-    private TerrainMap() {throw new UnsupportedOperationException("Non-instancable class");}
 
-    public enum TerrainType {
-        water,
-        plain,
-        cliff,
-        mountain,
-        snow
+    public static SuperBooleanFlatRowGrid grids[] = new SuperBooleanFlatRowGrid[9];
+
+    static {
+
+        for (int i = 0; i < grids.length; i ++) {
+            grids[i] = new SuperBooleanFlatRowGrid(10000, 10000, false);
+        }
+
     }
-
-    public static CombiningFlatRowGrid<TerrainType> terrain = new CombiningFlatRowGrid<>(10000, 10000, TerrainType.water);
-
-
+    
+    
 }

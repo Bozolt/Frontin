@@ -12,7 +12,6 @@ public class ServerApp {
 
         Server server = new Server();
         frame.add(server);
-        frame.addWindowListener(server);
 
         frame.setResizable(false);
 
